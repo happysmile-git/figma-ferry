@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: Inter, system-ui, sans-serif; background: #101012; color: #f5f5f5; margin: 0; padding: 10px 12px; }
+  .row { display: flex; align-items: center; gap: 7px; }
+  #dot { width: 8px; height: 8px; border-radius: 50%; background: #666; flex: none; }
+  #dot.on { background: #22c55e; box-shadow: 0 0 6px #22c55e88; }
+  #dot.err { background: #ff4d4f; }
+  #dot.work { background: #38bdf8; box-shadow: 0 0 6px #38bdf888; }
+  b.title { font-size: 12.5px; letter-spacing: .1px; }
+  .ver { font-size: 9px; color: #71717a; background: #1c1c1f; border: 1px solid #2a2a2e; padding: 1px 5px; border-radius: 99px; }
+  #status { font-size: 10.5px; color: #a1a1aa; margin-left: auto; }
+  .iconbtn { flex: none; width: 22px; height: 22px; border-radius: 6px; border: 1px solid #2a2a2e; background: #1c1c1f; color: #d4d4d8; cursor: pointer; font-size: 12px; line-height: 1; padding: 0; }
+  .iconbtn:hover { background: #26262a; }
+  #file { font-size: 10px; color: #71717a; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card { background: #17171a; border: 1px solid #26262b; border-radius: 10px; padding: 8px 10px; margin-top: 8px; }
+  .lbl { font-size: 8.5px; font-weight: 700; letter-spacing: 1.2px; color: #71717a; }
+  #code { font-family: ui-monospace, monospace; font-size: 10px; color: #7dd3fc; word-break: break-all; margin-top: 3px; user-select: all; }
+  .btns { display: flex; gap: 6px; margin-top: 8px; }
+  button.act { flex: 1; padding: 7px 6px; border-radius: 8px; border: 1px solid #2e2e33; background: #1f1f23; color: #f5f5f5; font-size: 11px; font-weight: 600; cursor: pointer; }
+  button.act:hover { background: #26262b; }
+  button.primary { background: #0284c7; border-color: #0369a1; }
+  button.primary:hover { background: #0369a1; }
+  details { background: #17171a; border: 1px solid #26262b; border-radius: 10px; margin-top: 7px; }
+  summary { font-size: 11px; font-weight: 600; padding: 7px 10px; cursor: pointer; list-style: none; display: flex; align-items: center; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "▾"; margin-left: auto; color: #71717a; font-size: 10px; }
+  details[open ] summary::after { content: "▴"; }
+  .body { padding: 0 10px 9px; font-size: 10.5px; color: #a1a1aa; line-height: 1.55; }
+  .body ol, .body ul { margin: 2px 0 2px 14px; padding: 0; }
+  .body li { margin: 2px 0; }
+  .body code, #miniCode { font-family: ui-monospace, monospace; color: #7dd3fc; font-size: 9.5px; }
+  .body b { color: #e4e4e7; }
+  input { width: 100%; margin-top: 5px; padding: 6px 7px; font-size: 10px; border-radius: 7px; border: 1px solid #2e2e33; background: #0c0c0e; color: #f5f5f5; }
+  .minirow { display: flex; gap: 6px; margin-top: 6px; }
+  .minirow button { flex: 1; padding: 5px; font-size: 10px; }
+  #log { font-size: 9.5px; color: #71717a; line-height: 1.5; max-height: 88px; overflow: hidden; white-space: pre-line; }
+  .warn { color: #fbbf24; }
+  #miniBar { display: none; margin-top: 7px; align-items: center; gap: 7px; }
+  #miniBar .grow { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  body.mini #main { display: none; }
+  body.mini #miniBar { display: flex; }
+</style>
+</head>
+<body>
+  <div class="row">
+    <span id="dot"></span><b class="title">Arena Bridge</b><span class="ver">v2.1</span>
+    <span id="status">starting…</span>
+    <button class="iconbtn" id="minBtn" title="Minimize / expand">–</button>
+  </div>
+  <div id="miniBar">
+    <span class="grow" id="miniCode">…</span>
+    <button class="iconbtn" id="miniCopy" title="Copy session code">⧉</button>
+  </div>
+
+  <div id="main">
+    <div id="file">File: —</div>
+    <div class="card">
+      <div class="lbl">SESSION CODE — GIVE THIS TO YOUR ARENA AGENT</div>
+      <div id="code">…</div>
+      <div class="btns">
+        <button class="act primary" id="copy">Copy code</button>
+        <button class="act" id="ping">Ping</button>
+        <button class="act" id="reset">New code</button>
+      </div>
+    </div>
+
+    <details>
+      <summary>How to connect</summary>
+      <div class="body">
+        <ol>
+          <li><b>Copy the code</b> above.</li>
+          <li>Paste it to your Arena agent in any chat, e.g. <i>“Connect with this code and build …”</i></li>
+          <li>The agent works in this file while this popup stays open.</li>
+          <li><b>Closing this popup disconnects instantly.</b> Use the – button to shrink it instead.</li>
+        </ol>
+      </div>
+    </details>
+
+    <details>
+      <summary>Supabase relay</summary>
+      <div class="body">
+        Relay: <b id="relayHost">default (built-in)</b><br>
+        Commands travel through Supabase tables; the plugin executes them locally in Figma — no Figma REST API, no rate limits.
+        <input id="relayUrl" placeholder="Your Supabase project URL (https://….supabase.co)">
+        <input id="relayKey" placeholder="Publishable key (sb_publishable_… — never a secret key)">
+        <div class="minirow">
+          <button class="act" id="saveRelay">Save relay</button>
+          <button class="act" id="clearRelay">Use default</button>
+        </div>
+        Setup: run <code>supabase/relay-setup.sql</code> in your project's SQL Editor, paste URL + publishable key here, save, reopen the plugin. Full guide: <b>SUPABASE_SETUP.md</b> in the repo.
+      </div>
+    </details>
+
+    <details>
+      <summary>What Arena can do here</summary>
+      <div class="body">
+        <ul>
+          <li>Build production frames with real <b>Auto Layout</b></li>
+          <li>Import <b>SVG as native vectors</b> + build component/icon libraries</li>
+          <li>Components, variants, styles &amp; variables</li>
+          <li><b>Prototyping</b> — reactions &amp; flows</li>
+          <li>Export PNG / JPG / SVG / PDF of any node</li>
+          <li>Read designs back and generate <b>production code</b></li>
+        </ul>
+      </div>
+    </details>
+
+    <details open>
+      <summary>Activity</summary>
+      <div class="body"><div id="log">Waiting…</div></div>
+    </details>
+  </div>
+
+<script>
+  const DEFAULT_CONFIG = {
+    url: "https://ejdtqxyynjyfrmiopixp.supabase.co",
+    key: "sb_publishable_NpDXF_JyvRumY6UZlvWA3A_i1L4Auq-",
+    commandsTable: "arena_figma_commands",
+    eventsTable: "arena_figma_events",
+    exportsTable: "arena_figma_exports",
+  };
+  let CONFIG = Object.assign({}, DEFAULT_CONFIG);
+  let custom = false;
+  try {
+    const saved = JSON.parse(localStorage.getItem('arena-Bridge-relay') || 'null');
+    if (saved && saved.url && saved.key) { CONFIG = Object.assign({}, DEFAULT_CONFIG, saved); custom = true; }
+  } catch (e) {}
+  let SESSION = null, busy = false, lastActivity = 0, mini = false;
+  const $ = (id) => document.getElementById(id);
+  const dot = $('dot'), statusEl = $('status'), codeEl = $('code'), logEl = $('log'), fileEl = $('file');
+
+  $('relayHost').textContent = custom ? CONFIG.url.replace('https://', '') : 'default (built-in)';
+  if (custom) { $('relayUrl').value = CONFIG.url; $('relayKey').value = CONFIG.key; }
+
+  function log(msg) {
+    const t = new Date().toLocaleTimeString([], { hour12: false });
+    logEl.textContent = `[${t}] ${msg}\n` + logEl.textContent.split('\n').slice(0, 6).join('\n');
+  }
+  function setState(cls, text) { dot.className = cls; statusEl.textContent = text; }
+  function post(type, extra) { parent.postMessage({ pluginMessage: Object.assign({ type }, extra || {}) }, '*'); }
+  function setMini(m) {
+    mini = m;
+    document.body.classList.toggle('mini', m);
+    $('minBtn').textContent = m ? '+' : '–';
+    post('resize', { width: 320, height: m ? 108 : 468 });
+  }
+  $('minBtn').onclick = () => setMini(!mini);
+  $('miniCopy').onclick = () => $('copy').click();
+
+  async function sb(path, options) {
+    const opts = options || {};
+    const headers = Object.assign({ 'apikey': CONFIG.key, 'Authorization': 'Bearer ' + CONFIG.key, 'Content-Type': 'application/json' }, opts.headers || {});
+    const res = await fetch(CONFIG.url + '/rest/v1/' + path, Object.assign({}, opts, { headers }));
+    if (!res.ok) throw new Error('Relay HTTP ' + res.status + ': ' + (await res.text()).slice(0, 300));
+    if (res.status === 204) return null;
+    const text = await res.text();
+    return text ? JSON.parse(text) : null;
+  }
+  async function postEvent(level, message, data, commandId) {
+    if (!SESSION) return;
+    try { await sb(CONFIG.eventsTable, { method: 'POST', headers: { 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ session_id: SESSION, command_id: commandId || null, level, message, data: data || {} }) }); } catch (e) {}
+  }
+  async function insertCommand(commandType, payload) {
+    const rows = await sb(CONFIG.commandsTable, { method: 'POST', headers: { 'Prefer': 'return=representation' },
+      body: JSON.stringify({ session_id: SESSION, command_type: commandType, payload: payload || {} }) });
+    return rows && rows[0];
+  }
+  async function poll() {
+    if (!SESSION || busy) return;
+    try {
+      const rows = await sb(CONFIG.commandsTable + '?session_id=eq.' + encodeURIComponent(SESSION) + '&status=eq.pending&order=created_at.asc&limit=1&select=*');
+      if (!rows || !rows.length) { setState('on', 'connected'); return; }
+      const cmd = rows[0];
+      busy = true;
+      setState('work', 'working…');
+      log('Executing ' + cmd.command_type + '…');
+      const claimed = await sb(CONFIG.commandsTable + '?id=eq.' + cmd.id + '&status=eq.pending', {
+        method: 'PATCH', headers: { 'Prefer': 'return=representation' },
+        body: JSON.stringify({ status: 'running', claimed_at: new Date().toISOString() }) });
+      if (!claimed || !claimed.length) { busy = false; return; }
+      lastActivity = Date.now();
+      post('execute', { command: cmd });
+    } catch (e) {
+      setState('err', 'relay error');
+      log('Relay error: ' + e.message);
+    }
+  }
+  function schedule() {
+    const idle = Date.now() - lastActivity > 30000;
+    setTimeout(() => { poll().finally(schedule); }, busy ? 500 : idle ? 4000 : 900);
+  }
+
+  $('copy').onclick = async () => {
+    if (!SESSION) return;
+    try { await navigator.clipboard.writeText(SESSION); log('Code copied — paste it to your Arena agent.'); }
+    catch (e) {
+      const r = document.createRange(); r.selectNodeContents(codeEl);
+      const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      log('Code selected — press Ctrl+C.');
+    }
+  };
+  $('ping').onclick = async () => {
+    if (!SESSION) return;
+    try { await insertCommand('ping', { source: 'ui_button' }); log('Ping queued.'); poll(); }
+    catch (e) { log('Ping failed: ' + e.message); }
+  };
+  $('reset').onclick = () => { post('reset_session'); log('New code requested…'); };
+  $('saveRelay').onclick = () => {
+    const url = $('relayUrl').value.trim().replace(/\/+$/, ''), key = $('relayKey').value.trim();
+    if (!url || !key) { log('Paste both the URL and publishable key first.'); return; }
+    if (/sb_secret_|service_role/i.test(key)) { log('That is a SECRET key — use the publishable key instead.'); return; }
+    localStorage.setItem('arena-Bridge-relay', JSON.stringify({ url, key }));
+    log('Relay saved. Close & reopen the plugin to use it.');
+  };
+  $('clearRelay').onclick = () => {
+    localStorage.removeItem('arena-Bridge-relay');
+    $('relayUrl').value = ''; $('relayKey').value = '';
+    log('Default relay restored. Close & reopen the plugin.');
+  };
+
+  window.onmessage = async (event) => {
+    const msg = event.data && event.data.pluginMessage;
+    if (!msg) return;
+    if (msg.type === 'session') {
+      SESSION = msg.sessionId;
+      codeEl.textContent = SESSION;
+      $('miniCode').textContent = SESSION;
+      setState('on', 'connected');
+      log('Connected. Give this code to your Arena agent.');
+      return;
+    }
+    if (msg.type === 'hello') {
+      if (msg.data && msg.data.fileName) fileEl.textContent = 'File: ' + msg.data.fileName + ' · ' + ((msg.data.currentPage || {}).name || '');
+      postEvent('info', 'plugin_hello', msg.data || {});
+      return;
+    }
+    if (msg.type === 'result') {
+      let resultToStore = msg.result || {};
+      try {
+        if (msg.ok && resultToStore && resultToStore.__exportBase64) {
+          const ex = resultToStore;
+          await sb(CONFIG.exportsTable, { method: 'POST', headers: { 'Prefer': 'return=minimal' },
+            body: JSON.stringify({ session_id: SESSION, command_id: msg.commandId, node_id: ex.nodeId, node_name: ex.nodeName, format: ex.format || 'PNG', scale: ex.scale, width: ex.width, height: ex.height, data_base64: ex.__exportBase64 }) });
+          resultToStore = { exported: true, nodeId: ex.nodeId, nodeName: ex.nodeName, format: ex.format, scale: ex.scale, width: ex.width, height: ex.height, bytes: ex.bytes };
+        }
+      } catch (e) { log('Export upload failed: ' + e.message); }
+      const patch = msg.ok
+        ? { status: 'done', result: resultToStore, error: null, completed_at: new Date().toISOString() }
+        : { status: 'error', error: String(msg.error || 'Unknown error'), completed_at: new Date().toISOString() };
+      try {
+        await sb(CONFIG.commandsTable + '?id=eq.' + msg.commandId, { method: 'PATCH', headers: { 'Prefer': 'return=minimal' }, body: JSON.stringify(patch) });
+        await postEvent(msg.ok ? 'info' : 'error', msg.ok ? 'command_done' : 'command_error', msg.ok ? resultToStore : { error: patch.error }, msg.commandId);
+        log(msg.ok ? 'Done. Waiting for next command…' : 'Command failed — see agent.');
+        setState('on', 'connected');
+      } catch (e) { log('Result reporting failed: ' + e.message); }
+      busy = false;
+      lastActivity = Date.now();
+    }
+  };
+
+  parent.postMessage({ pluginMessage: { type: 'ui_ready' } }, '*');
+  schedule();
+</script>
+</body>
+</html>

@@ -22,7 +22,7 @@ You have two choices:
 
 ### 1. Create the project
 1. [supabase.com](https://supabase.com) → sign in → **New project**.
-2. Name it anything (e.g. `arena-figma-Bridge`), pick the region nearest to you, set a database password, **Create**.
+2. Name it anything (e.g. `figma-ferry`), pick the region nearest to you, set a database password, **Create**.
 3. Wait ~1 minute for provisioning. Free plan is enough (2 projects, 500 MB DB, unlimited API requests;
    note free projects pause after ~1 week of inactivity — resume from the dashboard anytime).
 

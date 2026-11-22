@@ -1,5 +1,5 @@
 // ============================================================
-// Arena — Figma Agent Bridge v2 (main thread)
+// Figma Ferry — Arena Agent Bridge (main thread)
 // Universal agent Bridge: receives commands from ui.html (which
 // polls a Supabase relay), executes them with the Figma Plugin
 // API locally in this file, and returns results/exports.

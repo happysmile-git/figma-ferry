@@ -1,6 +1,6 @@
 # Paste this into any Arena chat to connect it to your Figma
 
-> Connect to my Figma with the Arena Figma Bridge. My session code is: `PASTE-CODE-HERE`
+> Connect to my Figma with the Figma Ferry Bridge. My session code is: `PASTE-CODE-HERE`
 >
 > Use the Arena — Figma Agent Bridge protocol (Supabase relay + plugin in my Figma):
 > - Send commands with `Bridge_client.py`-style HTTP calls to the relay (publishable key is in the plugin's `ui.html`; read it programmatically, never print it).

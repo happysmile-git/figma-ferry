@@ -4,9 +4,9 @@ There are two levels of “live”. Start with #1; do #2 when you want anyone in
 
 ## 1. Use it yourself / share privately (2 minutes, no review)
 
-1. Download the latest release ZIP from this repo (**Releases → arena-figma-Bridge.zip**) and unzip it — or clone the repo and use the `plugin/` folder.
+1. Download the latest release ZIP from this repo (**Releases → figma-ferry.zip**) and unzip it — or clone the repo and use the `plugin/` folder.
 2. Figma **desktop app** → **Plugins → Development → Import plugin from manifest…** → select `manifest.json`.
-3. Open any file → **Plugins → Development → Arena — Figma Agent Bridge**.
+3. Open any file → **Plugins → Development → Figma Ferry — Arena Agent Bridge**.
 4. Copy the session code in the popup → paste it to your Arena agent (see `agent/CHAT_PROMPT.md`).
 5. Keep the popup open while working; hit **–** to minimize it to a slim bar. Closing it disconnects.
 

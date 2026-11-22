@@ -1,4 +1,4 @@
-# Arena ↔ Figma Agent Bridge
+# ⛴️ Figma Ferry — Arena ↔ Figma Agent Bridge
 
 > Let any **Arena AI agent** work inside your Figma file — building **production-ready frames**,
 > real **vector icons & components**, **Auto Layout**, **prototypes**, and turning designs back
@@ -25,7 +25,7 @@ editing, exporting and prototyping never touch Figma's rate-limited REST API.
 
 ## ⬇️ Download
 
-Go to **[Releases](../../releases)** and download **`arena-figma-Bridge.zip`** — it contains the
+Go to **[Releases](../../releases)** and download **`figma-ferry.zip`** — it contains the
 ready-to-import plugin plus the agent tools and guides. Or clone this repo and use `plugin/`.
 
 ## 🚀 Quick start (2 minutes)

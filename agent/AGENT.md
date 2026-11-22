@@ -1,6 +1,6 @@
-# AGENT.md — how any Arena agent drives Figma through this Bridge (v2)
+# AGENT.md — how any Arena agent drives Figma through Figma Ferry (v2)
 
-You are an Arena AI agent. The user has the **Arena — Figma Agent Bridge** plugin open in Figma.
+You are an Arena AI agent. The user has the **Figma Ferry** plugin open in Figma.
 They will give you a **session code** (UUID shown in the plugin popup). With it you can do
 essentially everything in their Figma file — create production-ready frames, real vector icons,
 components/variants, Auto Layout, variables/styles, prototyping (reactions + flows), exports —
